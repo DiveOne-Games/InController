@@ -1,3 +1,4 @@
+using Unity.Collections;
 using UnityEngine;
 
 namespace InController.Scripts
@@ -6,14 +7,20 @@ namespace InController.Scripts
     public class CharacterMovement : MonoBehaviour
     {
         public CharacterController2D controller;
-        private Vector2 motion;
-        private bool jumping;
-        private bool doubleJump;
-
+        
         // variable jump
         public float airTimeLimit = 0.3f;
         public float airTime;
+        public int doubleJumpLimit;
     
+        private Vector2 motion;
+        private bool jumping;
+        private bool doubleJump;
+        private int doubleJumpCount = 0;
+
+        private bool CanDoubleJump => doubleJumpCount < doubleJumpLimit;
+        private bool EndJump => airTime > airTimeLimit;
+        
         private void Update()
         {
 #if ENABLE_LEGACY_INPUT_MANAGER
@@ -22,24 +29,32 @@ namespace InController.Scripts
                 x = Input.GetAxis("Horizontal"),
                 y = Input.GetAxis("Vertical")
             };
-            if (Input.GetButtonDown("Jump") && controller.IsGrounded)
+            
+            if (controller.IsGrounded)
             {
-                jumping = true;
-                airTime = 0;
+                doubleJumpCount = 0;
+                if (Input.GetButtonDown("Jump"))
+                {
+                    jumping = true;
+                    airTime = 0;
+                }
+            }
+            else
+            {
+                if (Input.GetButtonDown("Jump") && CanDoubleJump)
+                {
+                    doubleJump = true;
+                    doubleJumpCount += 1;
+                }
             }
 
-            if (Input.GetButtonDown("Jump") && controller.CanDoubleJump)
-            {
-                doubleJump = true;
-            }
-        
-            if (jumping)
+            if (jumping | doubleJump)
             {
                 airTime += Time.deltaTime;
             }
 
             // Variable jump height
-            if (Input.GetButtonUp("Jump") | airTime > airTimeLimit)
+            if (Input.GetButtonUp("Jump") | EndJump)
             {
                 jumping = false;
                 doubleJump = false;
@@ -53,7 +68,7 @@ namespace InController.Scripts
         {
             controller.Move(motion, jumping, doubleJump);
             // LESSON: Alternative to just setting this value is to change it on the state of a keypress: up, down or long press
-            jumping = false; // prevents continuous jumping
+            // jumping = false; // prevents continuous jumping
             // doubleJump = false;
         }
     }

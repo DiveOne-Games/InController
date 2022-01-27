@@ -47,6 +47,7 @@ namespace InController.Scripts
     {
         public float speed;
         public int jumpThrust;
+        public float wallSlideSpeed;
         [Tooltip("Define the strings used to name your animation states.")]
         public AnimatorStates animatorStates = new AnimatorStates();
         
@@ -57,7 +58,7 @@ namespace InController.Scripts
         
         // normal jump
         public float jumpHeight;
-        
+
         private float jumpVelocity => Mathf.Sqrt(jumpHeight * -2 * (Physics2D.gravity.y * rigidbody2d.gravityScale));
         private Vector2 velocity = Vector2.zero;
     
@@ -73,11 +74,12 @@ namespace InController.Scripts
         public static readonly int Jumping = Animator.StringToHash("jumping");
         public static readonly int Attacking = Animator.StringToHash("attacking");
         public static readonly int Hurt = Animator.StringToHash("hurt");
-        public static readonly int Climbing = Animator.StringToHash("climbing");
         public static readonly int Dead = Animator.StringToHash("dead");
         public static readonly int Tumbling = Animator.StringToHash("tumbling");
         public static readonly int ShootingBow = Animator.StringToHash("shootingBow");
         public static readonly int CastingSpell = Animator.StringToHash("castingSpell");
+        public static readonly int WallSliding = Animator.StringToHash("wallSliding");
+        public static readonly int Climbing = Animator.StringToHash("climbing");
         public static readonly int Grounded = Animator.StringToHash("grounded");
 
         protected bool walking;
@@ -93,7 +95,6 @@ namespace InController.Scripts
         protected bool climbing;
         protected bool grounded = true;
         protected bool doubleJump;
-        protected bool wallSliding;
         protected bool touchingWall;
 
         public bool IsFacingLeft => facingLeft;
@@ -175,6 +176,7 @@ namespace InController.Scripts
             animator.SetBool(ShootingBow, shooting);
             animator.SetBool(CastingSpell, IsSpellCasting);
             animator.SetBool(Chasing, IsChasing);
+            animator.SetBool(WallSliding, IsWallSliding);
         }
     
         public void ChangeFaceDirection() 
@@ -193,7 +195,7 @@ namespace InController.Scripts
 
         public void Jump()
         {
-            grounded = false;
+            // grounded = false;
             rigidbody2d.AddForce(Vector2.up * jumpVelocity, ForceMode2D.Impulse);
             doubleJump = true;
         }
@@ -207,7 +209,7 @@ namespace InController.Scripts
 
         public void WallSlide()
         {
-            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, rigidbody2d.velocity.y - 1);
+            rigidbody2d.velocity = new Vector2(rigidbody2d.velocity.x, rigidbody2d.velocity.y - wallSlideSpeed);
         }
     }
 }
