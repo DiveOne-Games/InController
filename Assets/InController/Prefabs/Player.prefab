@@ -72,7 +72,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 8
   boxCollider: {fileID: 1539363764269233767}
   distanceToTarget: 0.1
   boxCastDirection: {x: 1, y: 0}
@@ -216,10 +216,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   jumpThrust: 35
+  wallSlideSpeed: -2
   smoothDamp: 0.05
   groundCheck: {fileID: 1539363764756742014}
   wallCheck: {fileID: 1539363764269233766}
-  jumpHeight: 4
+  jumpHeight: 2
   rigidbody2d: {fileID: 0}
 --- !u!114 &1539363764302952301
 MonoBehaviour:
@@ -234,8 +235,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 1539363764302952300}
-  airTimeLimit: 0.6
+  airTimeLimit: 0.2
   airTime: 0
+  doubleJumpLimit: 1
 --- !u!95 &1539363764302952298
 Animator:
   serializedVersion: 3

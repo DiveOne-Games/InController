@@ -48,6 +48,8 @@ namespace InController.Scripts
         public float speed;
         public int jumpThrust;
         public float wallSlideSpeed;
+        public float slopeSpeed;
+        
         [Tooltip("Define the strings used to name your animation states.")]
         public AnimatorStates animatorStates = new AnimatorStates();
         
@@ -149,7 +151,14 @@ namespace InController.Scripts
             motion = movement;
             jumping = jumpActive;
             doubleJump = doubleJumpActive;
-            var targetVelocity = new Vector2(motion.x * speed, rigidbody2d.velocity.y);
+            float currentSpeed = motion.x * speed;
+
+            if (groundCheck.IsSloped)
+            {
+                currentSpeed = motion.x * slopeSpeed;
+            }
+            
+            var targetVelocity = new Vector2(currentSpeed, rigidbody2d.velocity.y);
             rigidbody2d.velocity = Vector2.SmoothDamp(rigidbody2d.velocity, targetVelocity, ref velocity, smoothDamp);
 
             if (doubleJump)

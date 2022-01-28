@@ -1,3 +1,4 @@
+using InController.Scripts.Utilities;
 using Unity.Collections;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace InController.Scripts
         
         // variable jump
         public float airTimeLimit = 0.3f;
-        public float airTime;
+        [ReadOnlyField, SerializeField] private float airTime;
         public int doubleJumpLimit;
     
         private Vector2 motion;
