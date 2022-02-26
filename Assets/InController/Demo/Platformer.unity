@@ -1366,7 +1366,7 @@ SpriteShapeRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1480,10 +1480,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 1539363764302952300, guid: a453d0b82fb43284495334d908a22590, type: 3}
-      propertyPath: slopeSpeed
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 1539363764302952303, guid: a453d0b82fb43284495334d908a22590, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1527,22 +1523,6 @@ PrefabInstance:
     - target: {fileID: 1539363764302952303, guid: a453d0b82fb43284495334d908a22590, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1539363764756741984, guid: a453d0b82fb43284495334d908a22590, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.941
-      objectReference: {fileID: 0}
-    - target: {fileID: 1539363764756741985, guid: a453d0b82fb43284495334d908a22590, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1539363764756742014, guid: a453d0b82fb43284495334d908a22590, type: 3}
-      propertyPath: distanceToGround
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1539363764756742014, guid: a453d0b82fb43284495334d908a22590, type: 3}
-      propertyPath: targetLayer.m_Bits
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a453d0b82fb43284495334d908a22590, type: 3}

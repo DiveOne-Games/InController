@@ -1,57 +1,18 @@
-using System;
 using UnityEngine;
 
 namespace InController.Scripts
 {
-    // TODO: test animator states actually work with new inspector fields
-    [Serializable]
-    public class AnimatorStates
-    {
-        // TODO: implement custom drawer to set values in inspector
-        public static string idleString = "";
-        public static string runningString = "";
-        public static string walkingString = "";
-        public static string jumpingString = "";
-        public static string chasingString = "";
-        public static string attackingString = "";
-        public static string hurtString = "";
-        public static string climbingString = "";
-        public static string deadString = "";
-        public static string tumblingString = "";
-        public static string shootBowString = "";
-        public static string castSpellString = "";
-        public static string groundedString = "";
-        public static string fallingString = "";
-
-        public static int Idle = Animator.StringToHash(idleString);
-        public static int Running = Animator.StringToHash(runningString);
-        public static int Walking = Animator.StringToHash(walkingString);
-        public static int Chasing = Animator.StringToHash(chasingString);
-        public static int Jumping = Animator.StringToHash(jumpingString);
-        public static int Attacking = Animator.StringToHash(attackingString);
-        public static int Hurt = Animator.StringToHash(hurtString);
-        public static int Climbing = Animator.StringToHash(climbingString);
-        public static int Dead = Animator.StringToHash(deadString);
-        public static int Tumbling = Animator.StringToHash(tumblingString);
-        public static int ShootingBow = Animator.StringToHash(shootBowString);
-        public static int CastingSpell = Animator.StringToHash(castSpellString);
-        public static int Grounded = Animator.StringToHash(groundedString);
-        public static int Falling = Animator.StringToHash(fallingString);
-    }
     /// <summary>
     /// Sets values that will help determine player behavior.
     /// Behaviors themselves are defined as such in their relevant scripts.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Animator))]
-    public class CharacterController2D : MonoBehaviour
+    public abstract class CharacterController2D : MonoBehaviour
     {
         public float speed;
         public int jumpThrust;
         public float wallSlideSpeed;
         public float slopeSpeed;
-        
-        [Tooltip("Define the strings used to name your animation states.")]
-        public AnimatorStates animatorStates = new AnimatorStates();
         
         [Tooltip("Supports smoother motion transitions.")]
         [Range(0, 0.3f)] public float smoothDamp = 0.05f;
@@ -72,13 +33,11 @@ namespace InController.Scripts
         public static readonly int Idle = Animator.StringToHash("idle");
         public static readonly int Running = Animator.StringToHash("running");
         public static readonly int Walking = Animator.StringToHash("walking");
-        public static readonly int Chasing = Animator.StringToHash("chasing");
         public static readonly int Jumping = Animator.StringToHash("jumping");
         public static readonly int Attacking = Animator.StringToHash("attacking");
         public static readonly int Hurt = Animator.StringToHash("hurt");
         public static readonly int Dead = Animator.StringToHash("dead");
         public static readonly int Tumbling = Animator.StringToHash("tumbling");
-        public static readonly int ShootingBow = Animator.StringToHash("shootingBow");
         public static readonly int CastingSpell = Animator.StringToHash("castingSpell");
         public static readonly int WallSliding = Animator.StringToHash("wallSliding");
         public static readonly int Climbing = Animator.StringToHash("climbing");
@@ -93,7 +52,6 @@ namespace InController.Scripts
         protected bool tumbling;
         protected bool dead;
         protected bool facingLeft;
-        protected bool chasing;
         protected bool climbing;
         protected bool grounded = true;
         protected bool doubleJump;
@@ -110,7 +68,6 @@ namespace InController.Scripts
         public bool IsDead => dead;
         public bool IsShooting => shooting;
         public bool IsSpellCasting => casting;
-        public bool IsChasing => chasing;
         public bool IsClimbing => climbing;
         public bool IsTouchingWall => touchingWall;
         public bool IsWallSliding => !grounded && rigidbody2d.velocity.y < 0 && touchingWall;
@@ -120,32 +77,6 @@ namespace InController.Scripts
         public bool CanDoubleJump => !grounded && jumping;
         public bool IsGrounded => grounded;
         
-        private void Awake()
-        {
-            rigidbody2d = GetComponent<Rigidbody2D>();
-            animator = GetComponent<Animator>();
-            currentScale = rigidbody2d.transform.localScale;
-        }
-        
-        private void Update()
-        {
-            if (motion.x > 0) facingLeft = false;
-            if (motion.x < 0) facingLeft = true;
-            SetAnimationState();
-        }
-
-        private void FixedUpdate()
-        {
-            grounded = groundCheck.IsGrounded();
-            touchingWall = wallCheck.IsTouching();
-
-            if (IsWallSliding)
-            {
-                WallSlide();
-            }
-            ChangeFaceDirection();
-        }
- 
         public void Move(Vector2 movement, bool jumpActive, bool doubleJumpActive)
         {
             motion = movement;
@@ -153,6 +84,7 @@ namespace InController.Scripts
             doubleJump = doubleJumpActive;
             float currentSpeed = motion.x * speed;
 
+            // FIXME: Temporary. doesnt account for upward/downward slope speeds.
             if (groundCheck.IsSloped)
             {
                 currentSpeed = motion.x * slopeSpeed;
@@ -182,9 +114,7 @@ namespace InController.Scripts
             animator.SetBool(Hurt, IsHurt);
             animator.SetBool(Tumbling, IsTumbling);
             animator.SetBool(Dead, IsDead);
-            animator.SetBool(ShootingBow, shooting);
             animator.SetBool(CastingSpell, IsSpellCasting);
-            animator.SetBool(Chasing, IsChasing);
             animator.SetBool(WallSliding, IsWallSliding);
         }
     

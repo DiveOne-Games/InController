@@ -7,14 +7,16 @@ namespace InController.Scripts
         [SerializeField] public LayerMask targetLayer;
         public BoxCollider2D boxCollider;
         [Range(-0.5f, 0.75f)] public float distanceToGround;
-        private bool isOnSlope;
 
         public bool IsSloped => isOnSlope;
+        private bool isOnSlope;
 
         public bool IsGrounded()
         {
             RaycastHit2D hit = Physics2D.BoxCast(transform.position, boxCollider.size, 0, Vector2.down, distanceToGround,targetLayer);
             Debug.Log("Ground check: " + hit.collider);
+            
+            // FIXME: Temporary. doesnt account for upward/downward slope speeds.
             if (hit.collider != null)
                 isOnSlope = hit.collider.CompareTag("Slope");
             return hit.collider != null;
